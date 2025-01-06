@@ -7,10 +7,10 @@ from xgboost import XGBClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-# Load trained model and transformer (assuming you saved them earlier)
-xgb_model = XGBClassifier()
-xgb_model.load_model('xgb_model.json')  # Load saved XGBoost model
-
+# Load the XGBoost model
+with open("xgb_model.pkl", "rb") as f:
+    xgb_model = pickle.load(f)
+    
 def preprocess_input(data, transformer):
     """Preprocess user inputs using the trained transformer."""
     return transformer.transform(data)

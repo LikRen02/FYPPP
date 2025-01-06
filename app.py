@@ -15,7 +15,7 @@ with open("xgb_model.pkl", "rb") as f:
 with open("transformer.pkl", "rb") as f:
     transformer = pickle.load(f)
 
-# Define all expected columns
+# Define all expected columns based on training data
 def get_expected_columns():
     return [
         "Transaction Amount",
@@ -56,10 +56,11 @@ def main():
     transaction_amount = st.number_input("Transaction Amount", min_value=0.0, step=0.01)
     transaction_date = st.date_input("Transaction Date", value=datetime.now().date())
     transaction_hour = st.number_input("Transaction Hour (0-23)", min_value=0, max_value=23, step=1)
-    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home & Garden", "Toys", "Others"])
+    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home", "Toys", "Others"])
     quantity = st.number_input("Quantity", min_value=1, step=1)
     device_used = st.selectbox("Device Used", ["Mobile", "Laptop", "Tablet", "Desktop"])
     is_address_match = st.selectbox("Is Address Match", ["Yes", "No"])
+    payment_method = st.selectbox("Payment Method", ["Credit Card", "Debit Card", "PayPal", "Others"])
 
     # Derived features
     day_of_week = transaction_date.weekday()
@@ -76,7 +77,8 @@ def main():
         "Is Address Match": [1 if is_address_match == "Yes" else 0],
         "Transaction DOW": [day_of_week],
         "Transaction Day": [transaction_day],
-        "Transaction Month": [transaction_month]
+        "Transaction Month": [transaction_month],
+        "Payment Method": [payment_method]
     })
 
     # Ensure the input matches the transformer format

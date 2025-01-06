@@ -10,9 +10,18 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 # Load the XGBoost model
 with open("xgb_model.pkl", "rb") as f:
     xgb_model = pickle.load(f)
-    
+
+# Load the transformer
+with open("transformer.pkl", "rb") as f:
+    transformer = pickle.load(f)
+
 def preprocess_input(data, transformer):
     """Preprocess user inputs using the trained transformer."""
+    expected_columns = transformer.get_feature_names_out()
+    for col in expected_columns:
+        if col not in data.columns:
+            data[col] = 0  # Add missing columns with default values
+    data = data[expected_columns]  # Ensure correct column order
     return transformer.transform(data)
 
 def main():
@@ -47,20 +56,20 @@ def main():
         "Transaction Month": [transaction_month]
     })
 
-    # Load and apply the transformer
-    with open("transformer.pkl", "rb") as f:
-        transformer = pickle.load(f)
+    # Ensure the input matches the transformer format
+    try:
+        preprocessed_input = preprocess_input(user_input, transformer)
 
-    preprocessed_input = preprocess_input(user_input, transformer)
+        # Prediction
+        if st.button("Predict Fraud"):  # Button to make predictions
+            prediction = xgb_model.predict(preprocessed_input)[0]
 
-    # Prediction
-    if st.button("Predict Fraud"):  # Button to make predictions
-        prediction = xgb_model.predict(preprocessed_input)[0]
-
-        if prediction == 1:
-            st.error("⚠️ This transaction is predicted to be FRAUDULENT!")
-        else:
-            st.success("✅ This transaction is predicted to be SAFE.")
+            if prediction == 1:
+                st.error("⚠️ This transaction is predicted to be FRAUDULENT!")
+            else:
+                st.success("✅ This transaction is predicted to be SAFE.")
+    except ValueError as e:
+        st.error(f"Error in processing input: {e}")
 
 if __name__ == "__main__":
     main()

@@ -56,7 +56,7 @@ def main():
     transaction_amount = st.number_input("Transaction Amount", min_value=0.0, step=0.01)
     transaction_date = st.date_input("Transaction Date", value=datetime.now().date())
     transaction_hour = st.number_input("Transaction Hour (0-23)", min_value=0, max_value=23, step=1)
-    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home", "Toys", "Others"])
+    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home & Garden", "Toys", "Others"])
     quantity = st.number_input("Quantity", min_value=1, step=1)
     device_used = st.selectbox("Device Used", ["Mobile", "Laptop", "Tablet", "Desktop"])
     is_address_match = st.selectbox("Is Address Match", ["Yes", "No"])

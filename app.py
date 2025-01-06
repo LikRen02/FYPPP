@@ -7,20 +7,43 @@ from xgboost import XGBClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-# Load the XGBoost model
-with open("xgb_model.pkl", "rb") as f:
-    xgb_model = pickle.load(f)
+# Save the XGBoost model
+with open("xgb_model.pkl", "wb") as f:
+    pickle.dump(xgb_model, f)
 
 # Load the transformer
 with open("transformer.pkl", "rb") as f:
     transformer = pickle.load(f)
 
+# Define all expected columns
+def get_expected_columns():
+    return [
+        "Transaction Amount",
+        "Transaction Hour",
+        "Product Category",
+        "Quantity",
+        "Device Used",
+        "Is Address Match",
+        "Transaction DOW",
+        "Transaction Day",
+        "Transaction Month",
+        "Payment Method",
+        "Account Age Days",
+        "Customer Age"
+    ]
+
 def preprocess_input(data, transformer):
-    """Preprocess user inputs using the trained transformer."""
-    expected_columns = transformer.get_feature_names_out()
+    """Ensure input data matches transformer expectations."""
+    expected_columns = get_expected_columns()
     for col in expected_columns:
         if col not in data.columns:
-            data[col] = 0  # Add missing columns with default values
+            # Add missing columns with default values
+            if col in ["Transaction Amount", "Account Age Days", "Customer Age"]:
+                data[col] = 0.0  # Default numeric values
+            elif col in ["Transaction Hour", "Transaction DOW", "Transaction Day", "Transaction Month", "Quantity"]:
+                data[col] = 0  # Default integer values
+            else:
+                data[col] = "Unknown"  # Default for categorical columns
     data = data[expected_columns]  # Ensure correct column order
     return transformer.transform(data)
 

@@ -7,9 +7,9 @@ from xgboost import XGBClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-# Save the XGBoost model
-with open("xgb_model.pkl", "wb") as f:
-    pickle.dump(xgb_model, f)
+# Load the XGBoost model
+with open("xgb_model.pkl", "rb") as f:
+    xgb_model = pickle.load(f)
 
 # Load the transformer
 with open("transformer.pkl", "rb") as f:

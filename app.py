@@ -48,22 +48,23 @@ def preprocess_input(data, transformer):
     return transformer.transform(data)
 
 def main():
-    st.title("Fraud Detection Application")
+    st.title("Fraudify")
+    st.markdown("Protecting Every Transaction, Every Time!")
 
     # Input details from the user
-    st.header("Transaction Details")
+    st.subheader("Transaction Details: ")
 
     transaction_amount = st.number_input("Transaction Amount", min_value=0.0, step=0.01)
     transaction_date = st.date_input("Transaction Date", value=datetime.now().date())
     day_of_week = transaction_date.strftime('%A')  # Convert to weekday name
-    st.write(f"Day of the Week: {day_of_week}")
+    st.write(f"Day of Week: {day_of_week}")
 
-    transaction_hour = st.number_input("Transaction Hour (0-23)", min_value=0, max_value=23, step=1)
-    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home", "Toys", "Others"])
-    quantity = st.number_input("Quantity", min_value=1, step=1)
+    transaction_hour = st.number_input("Transaction Hour (0-23) (eg. 8.30am = 8)", min_value=0, max_value=23, step=1)
+    product_category = st.selectbox("Product Category", ["Electronics", "Clothing", "Home & Garden", "Toys", "Others"])
+    quantity = st.number_input("Product Quantity", min_value=1, step=1)
     device_used = st.selectbox("Device Used", ["Mobile", "Laptop", "Tablet", "Desktop"])
-    is_address_match = st.selectbox("Is Address Match", ["Yes", "No"])
     payment_method = st.selectbox("Payment Method", ["Credit Card", "Debit Card", "PayPal", "Others"])
+    is_address_match = st.selectbox("Is the Billing Address the Same as the Shipping Address?", ["Yes", "No"])
 
     # Derived features
     transaction_day = transaction_date.day
